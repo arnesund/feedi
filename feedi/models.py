@@ -483,7 +483,7 @@ class Entry(db.Model):
         # exhaust last n hours of all ranks before moving to older stuff
         # if smaller delta, more chances to bury infrequent posts
         # if bigger, more chances to bury recent stuff under old unseen infrequent posts
-        recency_bucket_date = datetime.datetime.utcnow() - datetime.timedelta(hours=24)
+        recency_bucket_date = datetime.datetime.utcnow() - datetime.timedelta(hours=72)
 
         # isouter = true so that if a feed with only old stuff is added, entries still show up
         # even without having a freq rank
