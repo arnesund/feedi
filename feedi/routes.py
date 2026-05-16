@@ -28,6 +28,7 @@ def entry_list(**filters):
     """
     page = flask.request.args.get("page")
     hide_seen = flask.session.get("hide_seen", True)
+    ordering = flask.session.get("ordering", models.Entry.ORDER_RECENCY)
 
     filters = dict(**filters)
     text = flask.request.args.get("q", "").strip()
@@ -36,7 +37,7 @@ def entry_list(**filters):
 
     is_mixed_feed_list = filters.get("folder") or (flask.request.path == "/" and not filters.get("text"))
 
-    (entries, next_page) = fetch_entries_page(page, current_user.id, hide_seen, is_mixed_feed_list, **filters)
+    (entries, next_page) = fetch_entries_page(page, current_user.id, ordering, hide_seen, is_mixed_feed_list, **filters)
 
     if page:
         # if it's a paginated request, render a single page of the entry list
@@ -53,7 +54,7 @@ def entry_list(**filters):
     )
 
 
-def fetch_entries_page(page_arg, user_id, hide_seen_setting, is_mixed_feed_list, **filters):
+def fetch_entries_page(page_arg, user_id, ordering_setting, hide_seen_setting, is_mixed_feed_list, **filters):
     """
     Fetch a page of entries from db, optionally applying query filters (text search, feed, folder, etc.).
     The entry ordering depends on current filters and user session settings.
@@ -68,6 +69,10 @@ def fetch_entries_page(page_arg, user_id, hide_seen_setting, is_mixed_feed_list,
     # If a specific feed is beeing browsed, it makes sense to show all the entries.
     filters["hide_seen"] = is_mixed_feed_list and hide_seen_setting
 
+    # we only want to try a special sorting when looking at a folder or the home timeline
+    # so, for instance, we get old entries when looking at a specific feed
+    ordering = ordering_setting if is_mixed_feed_list else models.Entry.ORDER_RECENCY
+
     # pagination includes a start at timestamp so the entry set remains the same
     # even if new entries are added between requests
     if page_arg:
@@ -81,7 +86,7 @@ def fetch_entries_page(page_arg, user_id, hide_seen_setting, is_mixed_feed_list,
     if is_mixed_feed_list:
         filters["newer_than"] = datetime.datetime.utcnow() - datetime.timedelta(days=14)
 
-    query = models.Entry.filter_by(user_id, start_at, **filters)
+    query = models.Entry.sorted_by(user_id, ordering, start_at, **filters)
     entry_page = db.paginate(query, per_page=app.config["ENTRY_PAGE_SIZE"], page=page_num)
     next_page = f"{start_at.timestamp()}:{page_num + 1}" if entry_page.has_next else None
 

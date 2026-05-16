@@ -390,6 +390,12 @@ class Entry(db.Model):
     Represents an item within a Feed.
     """
 
+    "Sort entries in reverse chronological order."
+    ORDER_RECENCY = "recency"
+
+    "Sort entries based on the post frequency of the parent feed."
+    ORDER_FREQUENCY = "frequency"
+
     __tablename__ = "entries"
 
     id = sa.Column(sa.Integer, primary_key=True)
@@ -584,6 +590,10 @@ class Entry(db.Model):
 
     @classmethod
     def filter_by(cls, user_id, start_at, **filters):
+        return cls.sorted_by(user_id, cls.ORDER_FREQUENCY, start_at, **filters)
+
+    @classmethod
+    def sorted_by(cls, user_id, ordering, start_at, **filters):
         """
         Return a query to filter entries added after the `start_at` datetime,
         sorted according to the specified `ordering` criteria and with optional filters.
@@ -595,6 +605,9 @@ class Entry(db.Model):
 
         elif filters.get("sent_to_kindle"):
             return query.order_by(cls.sent_to_kindle.desc())
+
+        elif ordering == cls.ORDER_RECENCY:
+            return query.order_by(cls.sort_date.desc())
 
         # Order entries by least frequent feeds first then reverse-chronologically for entries in the same
         # frequency rank.
