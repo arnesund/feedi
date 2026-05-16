@@ -297,6 +297,11 @@ class RssFeed(Feed):
         doc="a comma separated list of conditions that feed source entries need to meet \
                         to be included in the feed.",
     )
+    use_related_link = sa.Column(
+        sa.Boolean,
+        default=False,
+        doc="When set, use the rel=related link as the entry URL instead of the default link.",
+    )
 
     __mapper_args__ = {"polymorphic_identity": Feed.TYPE_RSS}
 
@@ -321,6 +326,7 @@ class RssFeed(Feed):
             None if force else self.etag,
             None if force else self.modified_header,
             self.filters,
+            self.use_related_link or False,
         )
 
         self.etag = etag

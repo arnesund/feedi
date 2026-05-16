@@ -54,6 +54,18 @@
             <p class="help">A comma-separated list of field=value expressions to be used to filter items from the source when parsing the feed entries.</p>
         </div>
 
+
+        <div class="field" id="use-related-link-field">
+            <label class="label">Link behavior</label>
+            <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" name="use_related_link" value="1"
+                           {% if feed and feed.use_related_link %}checked{% endif %}>
+                    Use <code>rel=related</code> link as entry URL (e.g. for Daring Fireball)
+                </label>
+            </div>
+            <p class="help">When checked, the alternate permalink from the feed (rel=related) is used as the entry link instead of the default linked article.</p>
+        </div>
         {% if feed %}
         <div class="field">
             <label class="label">Frequency rank</label>

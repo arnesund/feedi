@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 feedparser.USER_AGENT = USER_AGENT
 
 
-def fetch(feed_name, url, skip_older_than, min_amount, previous_fetch, etag, modified, filters):
+def fetch(feed_name, url, skip_older_than, min_amount, previous_fetch, etag, modified, filters, use_related_link=False):
     parser_cls = RSSParser
     for cls in RSSParser.__subclasses__():
         if cls.is_compatible(url):
@@ -27,7 +27,7 @@ def fetch(feed_name, url, skip_older_than, min_amount, previous_fetch, etag, mod
 
     # TODO these arg distribution between constructor and method probably
     # doesn't make sense anymore
-    parser = parser_cls(feed_name, url, skip_older_than, min_amount)
+    parser = parser_cls(feed_name, url, skip_older_than, min_amount, use_related_link=use_related_link)
     return parser.fetch(previous_fetch, etag, modified, filters)
 
 
@@ -80,12 +80,13 @@ class RSSParser(CachingRequestsMixin):
         """
         raise NotImplementedError
 
-    def __init__(self, feed_name, url, skip_older_than, min_amount):
+    def __init__(self, feed_name, url, skip_older_than, min_amount, use_related_link=False):
         super().__init__()
         self.feed_name = feed_name
         self.url = url
         self.skip_older_than = skip_older_than
         self.min_amount = min_amount
+        self.use_related_link = use_related_link
 
     def fetch(self, previous_fetch, etag, modified, filters=None):
         """
@@ -178,6 +179,13 @@ class RSSParser(CachingRequestsMixin):
         return entry.get("title") or self.fetch_meta(self.parse_content_url(entry), "og:title")
 
     def parse_content_url(self, entry):
+        if self.use_related_link:
+            related = next(
+                (l["href"] for l in entry.get("links", []) if l.get("rel") == "related"),
+                None,
+            )
+            if related:
+                return related
         return entry["link"]
 
     def parse_target_url(self, entry):

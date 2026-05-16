@@ -266,6 +266,7 @@ def feed_add():
 def feed_add_submit():
     # FIXME use a forms lib for validations, type coercion, etc
     values = {k: v.strip() for k, v in flask.request.form.items() if v}
+    values["use_related_link"] = bool(flask.request.form.get("use_related_link"))
 
     if not values.get("name"):
         return flask.render_template("feed_edit.html", error_msg="name is required", **values)
@@ -335,6 +336,7 @@ def feed_edit_submit(feed_id):
     # so we don't need to explicitly inspect the feed to figure out its subclass
     for attr, value in values.items():
         setattr(feed, attr, value.strip())
+    feed.use_related_link = bool(flask.request.form.get("use_related_link"))
     db.session.commit()
 
     return flask.redirect(flask.url_for("feed_list"))
