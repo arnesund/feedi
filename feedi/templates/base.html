@@ -24,7 +24,7 @@
                 <a class="dropdown-item {% if filters.sent_to_kindle %}is-active{% endif %}" href="{{ url_for('sent_to_kindle') }}">
                     <icon class="icon"><i class="fas fa-tablet-alt"></i></icon> kindle log</a>
                 <a class="dropdown-item" href="{{ url_for('feed_list') }}"><icon class="icon"><i class="far fa-edit"></i></icon> feeds</a>
-                <a class="dropdown-item" href="#"><icon class="icon"><i class="fas fa-cog"></i></icon> settings</a>
+                <a class="dropdown-item" href="#" _="on click toggle .is-hidden-mobile on #settings-sidebar"><icon class="icon"><i class="fas fa-cog"></i></icon> settings</a>
                 <hr class="dropdown-divider"/>
 
                 {% endif %}
@@ -101,7 +101,7 @@
                                                 <li>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <a href="#">
+                                    <a href="#" _="on click toggle .is-hidden-mobile on #settings-sidebar">
                                       settings
                                       <icon class="icon"><i class="fas fa-cog"></i></icon>
                                     </a>
@@ -119,7 +119,7 @@
                 </div>
             </div>
             <div class="column">
-               <aside class="menu feeds-sidebar is-hidden-mobile">
+               <aside id="settings-sidebar" class="menu feeds-sidebar is-hidden-mobile">
                    <ul class="menu-list">
                        {% if current_user.is_authenticated %}
                        {% include "autocomplete.html" %}
