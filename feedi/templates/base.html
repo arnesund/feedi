@@ -24,7 +24,7 @@
                 <a class="dropdown-item {% if filters.sent_to_kindle %}is-active{% endif %}" href="{{ url_for('sent_to_kindle') }}">
                     <icon class="icon"><i class="fas fa-tablet-alt"></i></icon> kindle log</a>
                 <a class="dropdown-item" href="{{ url_for('feed_list') }}"><icon class="icon"><i class="far fa-edit"></i></icon> feeds</a>
-                <a class="dropdown-item" href="#" _="on click toggle .is-hidden-mobile on #settings-sidebar"><icon class="icon"><i class="fas fa-cog"></i></icon> settings</a>
+                <a class="dropdown-item" href="#" _="on click toggle .is-hidden on #settings-sidebar"><icon class="icon"><i class="fas fa-cog"></i></icon> settings</a>
                 <hr class="dropdown-divider"/>
 
                 {% endif %}
@@ -70,6 +70,20 @@
                     <a  class="navbar-item" href="{{ url_for('entry_list') }}"><h1 class="title  ">feedi</h1></a>
                         <ul class="menu-list">
                         {% if current_user.is_authenticated %}
+                        {% if shortcut_folders %}
+                        <hr class="dropdown-divider"/>
+                        {% for folder in shortcut_folders %}
+                        <li>
+                            <div class="level-right {% if filters.folder == folder %}is-active{% endif %}">
+                                <div class="level-item">
+                                    <a href="{{ url_for('entry_list', folder=folder) }}">
+                                        {{ folder }} <icon class="icon"><i class="far {% if filters.folder == folder %}fa-folder-open{% else %}fa-folder{% endif %}"></i></icon>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        {% endif %}
                         <hr class="dropdown-divider"/>
                         <li>
                             <div class="level-right {% if filters.favorited %}is-active{% endif %}">
@@ -93,21 +107,21 @@
                         <li>
                             <div class="level-right">
                                 <div class="level-item">
-                                  <a href="{{ url_for('feed_list') }}">                                  feeds <icon class="icon"><i class="fas fa-edit"></i></icon>
+                                  <a href="{{ url_for('feed_list') }}">feeds <icon class="icon"><i class="fas fa-edit"></i></icon>
                                   </a>
                                 </div>
                             </div>
                         </li>
-                                                <li>
+                        <li>
                             <div class="level-right">
                                 <div class="level-item">
-                                    <a href="#" _="on click toggle .is-hidden-mobile on #settings-sidebar">
+                                    <a href="#" _="on click toggle .is-hidden on #settings-sidebar">
                                       settings
                                       <icon class="icon"><i class="fas fa-cog"></i></icon>
                                     </a>
                                 </div>
                             </div>
-                                                </li>
+                        </li>
                         {% endif %}
                         </ul>
                 </aside>
@@ -119,7 +133,7 @@
                 </div>
             </div>
             <div class="column">
-               <aside id="settings-sidebar" class="menu feeds-sidebar is-hidden-mobile">
+               <aside id="settings-sidebar" class="menu feeds-sidebar is-hidden">
                    <ul class="menu-list">
                        {% if current_user.is_authenticated %}
                        {% include "autocomplete.html" %}

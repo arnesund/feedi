@@ -19,6 +19,14 @@ FEEDI_DELETE_AFTER_DAYS=31
 FEEDI_ENTRY_PAGE_SIZE=20
 ```
 
+### Right sidebar hidden by default, folders in left sidebar (`feedi/routes.py`, `feedi/templates/base.html`)
+
+The right settings sidebar is now hidden on both desktop and mobile by default,
+and only appears when clicking "Settings" in the left sidebar (or mobile menu).
+The left sidebar also lists all feed folders (tags), with the active folder highlighted
+and an open-folder icon. The folder list is restored from the `shortcut_folders` context
+processor which was stripped from the template by upstream.
+
 ### Chronological sort option restored (`feedi/models.py`, `feedi/routes.py`, `feedi/templates/base.html`)
 
 Upstream removed the chronological (recency) sorting option in commit ed65144. Restored

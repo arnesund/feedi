@@ -546,5 +546,13 @@ def toggle_setting(setting):
 
 @app.context_processor
 def template_defaults():
-    # templates expect this to exist
+    if current_user.is_authenticated:
+        folders = db.session.scalars(
+            db.select(models.Feed.folder)
+            .filter_by(user_id=current_user.id)
+            .filter(models.Feed.folder.isnot(None), models.Feed.folder != "")
+            .group_by(models.Feed.folder)
+            .order_by(sa.func.count(models.Feed.folder).desc())
+        ).all()
+        return dict(filters={}, shortcut_folders=folders)
     return dict(filters={})
