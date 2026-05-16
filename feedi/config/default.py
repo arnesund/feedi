@@ -13,6 +13,8 @@ RSS_MINIMUM_ENTRY_AMOUNT = 10
 
 # How many tasks to allow running concurrently. eg. how many feeds to sync at a time.
 # This affects the sqlalchemy engine pool size
+MASTODON_FETCH_LIMIT = 50
+
 HUEY_POOL_SIZE = 100
 
 # username to use internally when authentication is "disabled"
