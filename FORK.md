@@ -34,8 +34,16 @@ the two-button toggle in the settings sidebar (clock icon = chronological, calen
 frequency-based). Chronological order is now the default. The toggle only appears on mixed
 feed views (home page, folders), not when browsing a specific feed.
 
+### Per-feed `use_related_link` option for RSS feeds (`feedi/models.py`, `feedi/parsers/rss.py`, `feedi/routes.py`, `feedi/templates/feed_edit.html`)
+
+Some RSS feeds (e.g. Daring Fireball) put the linked external article as the `<link>`
+and include the site's own permalink as `<link rel="related">`. When `use_related_link`
+is enabled on a feed, the parser uses the related link as the entry URL instead of the
+default link. Configurable per-feed via a checkbox in the feed edit form.
+
 ### Mastodon support restored (`feedi/parsers/mastodon.py`, `feedi/auth.py`, `feedi/models.py`, `feedi/routes.py`, `feedi/templates/mastodon.html`)
 
 Upstream removed Mastodon support in v1 (commit 408068e) without explanation.
 Restored the full feature: OAuth login flow, timeline and notifications feeds,
-favorite and boost actions.
+favorite and boost actions. Also restored the `MASTODON_FETCH_LIMIT` config key
+that was dropped from `feedi/config/default.py` along with the v1 changes.
