@@ -18,3 +18,9 @@ FEEDI_RSS_SKIP_OLDER_THAN_DAYS=31
 FEEDI_DELETE_AFTER_DAYS=31
 FEEDI_ENTRY_PAGE_SIZE=20
 ```
+
+### Mastodon support restored (`feedi/parsers/mastodon.py`, `feedi/auth.py`, `feedi/models.py`, `feedi/routes.py`, `feedi/templates/mastodon.html`)
+
+Upstream removed Mastodon support in v1 (commit 408068e) without explanation.
+Restored the full feature: OAuth login flow, timeline and notifications feeds,
+favorite and boost actions.
