@@ -72,3 +72,4 @@ def load_config(app):
 
     app.config.from_object("feedi.config.default")
     app.config.from_object(f"feedi.config.{env}")
+    app.config.from_prefixed_env("FEEDI")
